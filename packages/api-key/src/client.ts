@@ -1,0 +1,25 @@
+import type { BetterAuthClientPlugin } from "@better-auth/core";
+import type { ApiKeyPlugin } from ".";
+import { API_KEY_ERROR_CODES } from "./error-codes";
+import { PACKAGE_VERSION } from "./version";
+
+export * from "./error-codes";
+
+export const apiKeyClient = () => {
+	return {
+		id: "api-key",
+		version: PACKAGE_VERSION,
+		$InferServerPlugin: {} as ApiKeyPlugin,
+		pathMethods: {
+			"/api-key/create": "POST",
+			"/api-key/delete": "POST",
+			"/api-key/delete-all-expired-api-keys": "POST",
+		},
+		$ERROR_CODES: API_KEY_ERROR_CODES,
+	} satisfies BetterAuthClientPlugin;
+};
+
+export type ApiKeyClientPlugin = ReturnType<typeof apiKeyClient>;
+
+export type { ApiKeyPlugin } from ".";
+export type * from "./types";
