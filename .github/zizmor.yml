@@ -1,0 +1,10 @@
+rules:
+  dangerous-triggers:
+    ignore:
+      # Intentional: this workflow only reads PR title metadata via GitHub API,
+      # never checks out fork code. The pull_request_target trigger is required
+      # for the action to post/delete PR comments.
+      - semantic-pull-request.yml
+      # Intentional: reads .changeset/*.md content via GitHub API only.
+      # No checkout of fork code. No code execution.
+      - auto-retarget.yml
