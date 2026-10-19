@@ -1,0 +1,190 @@
+import { createRemoteJWKSet, customFetch, jwtVerify } from "jose";
+import type { AwaitableFunction } from "../types";
+import {
+	fetchPublicResource,
+	fetchPublicResponse,
+} from "../utils/public-fetch";
+import type { ProviderOptions } from "./index";
+import { getOAuth2Tokens } from "./index";
+import type {
+	TokenEndpointAuth,
+	TokenEndpointSecretAuthentication,
+} from "./token-endpoint-auth";
+import { applyTokenEndpointAuth } from "./token-endpoint-auth";
+
+interface AuthorizationCodeRequestInput {
+	code: string;
+	redirectURI: string;
+	options: AwaitableFunction<Partial<ProviderOptions>>;
+	codeVerifier?: string | undefined;
+	deviceId?: string | undefined;
+	authentication?: TokenEndpointSecretAuthentication | undefined;
+	tokenEndpointAuth?: TokenEndpointAuth | undefined;
+	tokenEndpoint?: string | undefined;
+	headers?: Record<string, string> | undefined;
+	additionalParams?: Record<string, string> | undefined;
+	resource?: (string | string[]) | undefined;
+}
+
+interface AuthorizationCodeRequestBaseInput {
+	code: string;
+	redirectURI: string;
+	options: Partial<ProviderOptions>;
+	codeVerifier?: string | undefined;
+	deviceId?: string | undefined;
+	headers?: Record<string, string> | undefined;
+	additionalParams?: Record<string, string> | undefined;
+	resource?: (string | string[]) | undefined;
+}
+
+interface ValidateAuthorizationCodeInput extends AuthorizationCodeRequestInput {
+	tokenEndpoint: string;
+	/**
+	 * Origins exempt from the public-routable gate, for an operator whose token
+	 * endpoint runs on a private network. Forwarded to the SSRF fetch boundary.
+	 */
+	isTrustedOrigin?: (url: string) => boolean;
+}
+
+export async function authorizationCodeRequest({
+	code,
+	codeVerifier,
+	redirectURI,
+	options,
+	authentication,
+	tokenEndpointAuth,
+	tokenEndpoint,
+	deviceId,
+	headers,
+	additionalParams = {},
+	resource,
+}: AuthorizationCodeRequestInput) {
+	options = typeof options === "function" ? await options() : options;
+	const request = buildAuthorizationCodeRequest({
+		code,
+		codeVerifier,
+		redirectURI,
+		options,
+		deviceId,
+		headers,
+		additionalParams,
+		resource,
+	});
+
+	await applyTokenEndpointAuth({
+		body: request.body,
+		headers: request.headers,
+		options,
+		tokenEndpoint: tokenEndpoint ?? "",
+		grantType: "authorization_code",
+		tokenEndpointAuth,
+		authentication,
+	});
+
+	return request;
+}
+
+function buildAuthorizationCodeRequest({
+	code,
+	codeVerifier,
+	redirectURI,
+	options,
+	deviceId,
+	headers,
+	additionalParams = {},
+	resource,
+}: AuthorizationCodeRequestBaseInput) {
+	const body = new URLSearchParams();
+	const requestHeaders: Record<string, string> = {
+		"content-type": "application/x-www-form-urlencoded",
+		accept: "application/json",
+		...headers,
+	};
+
+	body.set("grant_type", "authorization_code");
+	body.set("code", code);
+	codeVerifier && body.set("code_verifier", codeVerifier);
+	options.clientKey && body.set("client_key", options.clientKey);
+	deviceId && body.set("device_id", deviceId);
+	body.set("redirect_uri", options.redirectURI || redirectURI);
+	if (resource) {
+		if (typeof resource === "string") {
+			body.append("resource", resource);
+		} else {
+			for (const _resource of resource) {
+				body.append("resource", _resource);
+			}
+		}
+	}
+	for (const [key, value] of Object.entries(additionalParams)) {
+		if (!body.has(key)) body.append(key, value);
+	}
+
+	return {
+		body,
+		headers: requestHeaders,
+	};
+}
+
+export async function validateAuthorizationCode({
+	code,
+	codeVerifier,
+	redirectURI,
+	options,
+	tokenEndpoint,
+	authentication,
+	tokenEndpointAuth,
+	deviceId,
+	headers,
+	additionalParams = {},
+	resource,
+	isTrustedOrigin,
+}: ValidateAuthorizationCodeInput) {
+	const { body, headers: requestHeaders } = await authorizationCodeRequest({
+		code,
+		codeVerifier,
+		redirectURI,
+		options,
+		authentication,
+		tokenEndpointAuth,
+		tokenEndpoint,
+		deviceId,
+		headers,
+		additionalParams,
+		resource,
+	});
+
+	const { data, error } = await fetchPublicResource<object>(tokenEndpoint, {
+		method: "POST",
+		body: body,
+		headers: requestHeaders,
+		isTrustedOrigin,
+	});
+	if (error) {
+		throw error;
+	}
+	const tokens = getOAuth2Tokens(data);
+	return tokens;
+}
+
+export async function validateToken(
+	token: string,
+	jwksEndpoint: string,
+	options?: {
+		audience?: string | string[];
+		issuer?: string | string[];
+		isTrustedOrigin?: (url: string) => boolean;
+	},
+) {
+	const jwks = createRemoteJWKSet(new URL(jwksEndpoint), {
+		[customFetch]: (url, init) =>
+			fetchPublicResponse(url, init, {
+				isTrustedOrigin: options?.isTrustedOrigin,
+			}),
+	});
+	const verified = await jwtVerify(token, jwks, {
+		audience: options?.audience,
+		issuer: options?.issuer,
+	});
+	return verified;
+}
