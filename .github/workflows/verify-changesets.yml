@@ -1,0 +1,17 @@
+name: Verify Changesets
+
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled, edited]
+    branches:
+      - v1.6.x
+  merge_group:
+
+permissions: {}
+
+jobs:
+  verify:
+    permissions:
+      contents: read
+      pull-requests: read
+    uses: better-auth/better-auth/.github/workflows/verify-changesets.yml@9ca15f3726275f31d86cbd0a8cf21fea64441634
