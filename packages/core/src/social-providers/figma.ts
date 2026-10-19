@@ -1,0 +1,129 @@
+import { betterFetch } from "@better-fetch/fetch";
+import { logger } from "../env";
+import { BetterAuthError } from "../error";
+import type { ProviderOptions, UpstreamProvider } from "../oauth2";
+import {
+	createAuthorizationURL,
+	refreshAccessToken,
+	resolveRequestedScopes,
+	validateAuthorizationCode,
+} from "../oauth2";
+
+export interface FigmaProfile {
+	id: string;
+	email: string;
+	handle: string;
+	img_url: string;
+}
+
+export interface FigmaOptions extends ProviderOptions<FigmaProfile> {
+	clientId: string;
+}
+
+const FIGMA_DEFAULT_SCOPES = ["current_user:read"];
+
+export const figma = (options: FigmaOptions) => {
+	const tokenEndpoint = "https://api.figma.com/v1/oauth/token";
+	return {
+		id: "figma",
+		name: "Figma",
+		callbackPath: "/callback/figma",
+		async createAuthorizationURL({
+			state,
+			scopes,
+			codeVerifier,
+			redirectURI,
+			additionalParams,
+		}) {
+			if (!options.clientId || !options.clientSecret) {
+				logger.error(
+					"Client Id and Client Secret are required for Figma. Make sure to provide them in the options.",
+				);
+				throw new BetterAuthError("CLIENT_ID_AND_SECRET_REQUIRED");
+			}
+			if (!codeVerifier) {
+				throw new BetterAuthError("codeVerifier is required for Figma");
+			}
+
+			const requestedScopes = resolveRequestedScopes(
+				options,
+				FIGMA_DEFAULT_SCOPES,
+				scopes,
+			);
+
+			return createAuthorizationURL({
+				id: "figma",
+				options,
+				authorizationEndpoint: "https://www.figma.com/oauth",
+				scopes: requestedScopes,
+				state,
+				codeVerifier,
+				redirectURI,
+				additionalParams,
+			});
+		},
+		validateAuthorizationCode: async ({ code, codeVerifier, redirectURI }) => {
+			return validateAuthorizationCode({
+				code,
+				codeVerifier,
+				redirectURI,
+				options,
+				tokenEndpoint,
+				authentication: "basic",
+			});
+		},
+		refreshAccessToken: options.refreshAccessToken
+			? options.refreshAccessToken
+			: async (refreshToken) => {
+					return refreshAccessToken({
+						refreshToken,
+						options: {
+							clientId: options.clientId,
+							clientKey: options.clientKey,
+							clientSecret: options.clientSecret,
+						},
+						tokenEndpoint,
+						authentication: "basic",
+					});
+				},
+		async getUserInfo(token) {
+			if (options.getUserInfo) {
+				return options.getUserInfo(token);
+			}
+
+			try {
+				const { data: profile } = await betterFetch<FigmaProfile>(
+					"https://api.figma.com/v1/me",
+					{
+						headers: {
+							Authorization: `Bearer ${token.accessToken}`,
+						},
+					},
+				);
+
+				if (!profile) {
+					logger.error("Failed to fetch user from Figma");
+					return null;
+				}
+
+				const userMap = await options.mapProfileToUser?.(profile);
+
+				return {
+					user: {
+						id: profile.id,
+						name: profile.handle,
+						email: profile.email,
+						image: profile.img_url,
+						emailVerified: false,
+						...userMap,
+					},
+					data: profile,
+				};
+			} catch (error) {
+				logger.error("Failed to fetch user info from Figma:", error);
+				return null;
+			}
+		},
+		options,
+	} satisfies UpstreamProvider<FigmaProfile>;
+};

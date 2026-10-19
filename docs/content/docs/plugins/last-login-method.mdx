@@ -1,0 +1,196 @@
+---
+title: Last Login Method
+description: Surface the most recent authentication factor a user signed in with.
+---
+
+The last login method plugin stamps a client-readable cookie with the primary
+factor from the finalized session's `amr` chain (`session.amr[0].method`).
+Use it to highlight the user's most recent option ("Last signed in with
+Google", "Continue with Passkey") on a sign-in page.
+
+The plugin is a thin reader: every sign-in path already records the factor it
+ran through `session.amr` (see [Authentication Factors](/docs/concepts/authentication-factors)),
+so there is no plugin state to keep in sync, no per-endpoint resolver, and no
+extra column on the user row.
+
+<Callout type="warn">
+  **Migrating from the pre-AMR plugin?** The cookie value now reflects the
+  *factor* (`"password"`, `"passkey"`, `"google"`) instead of the *endpoint*
+  the request hit (`"email"`, `"oauth/callback"`). UIs that compared against
+  the old vocabulary need to read the new factor names. The
+  `storeInDatabase`, `customResolveMethod`, and `schema` options are removed:
+  the cookie is the only projection, and the factor is derived from the
+  session's `amr` chain.
+</Callout>
+
+## Installation
+
+<Steps>
+  <Step>
+    ### Add the plugin to your auth config
+
+    ```ts title="auth.ts"
+    import { betterAuth } from "better-auth"
+    import { lastLoginMethod } from "better-auth/plugins" // [!code highlight]
+
+    export const auth = betterAuth({
+        // ... other config options
+        plugins: [
+            lastLoginMethod() // [!code highlight]
+        ]
+    })
+    ```
+  </Step>
+
+  <Step>
+    ### Add the client plugin to your auth client
+
+    ```ts title="auth-client.ts"
+    import { createAuthClient } from "better-auth/client"
+    import { lastLoginMethodClient } from "better-auth/client/plugins" // [!code highlight]
+
+    export const authClient = createAuthClient({
+        plugins: [
+            lastLoginMethodClient() // [!code highlight]
+        ]
+    })
+    ```
+  </Step>
+</Steps>
+
+## Usage
+
+The plugin writes the cookie automatically on every successful sign-in. The
+client plugin exposes helpers for reading and clearing it:
+
+```ts title="app.tsx"
+import { authClient } from "@/lib/auth-client"
+
+const lastMethod = authClient.getLastUsedLoginMethod()
+// "password", "passkey", "google", "github", "magic-link", ...
+
+const wasGoogle = authClient.isLastUsedLoginMethod("google")
+
+authClient.clearLastUsedLoginMethod()
+```
+
+### UI integration
+
+```tsx title="sign-in.tsx"
+import { authClient } from "@/lib/auth-client"
+import { Badge, Button } from "@/components/ui"
+
+export function SignInPage() {
+    const lastMethod = authClient.getLastUsedLoginMethod()
+    return (
+        <div className="space-y-4">
+            <Button
+                onClick={() => authClient.signIn.email({ /* ... */ })}
+                variant={lastMethod === "password" ? "default" : "outline"}
+            >
+                Sign in with Email
+                {lastMethod === "password" && <Badge>Last used</Badge>}
+            </Button>
+            <Button
+                onClick={() => authClient.signIn.social({ provider: "google" })}
+                variant={lastMethod === "google" ? "default" : "outline"}
+            >
+                Continue with Google
+                {lastMethod === "google" && <Badge>Last used</Badge>}
+            </Button>
+        </div>
+    )
+}
+```
+
+## Method vocabulary
+
+The cookie value is whatever sat at `session.amr[0].method` when the session
+was finalized. The two-tier vocabulary is:
+
+* **Built-in factors**: `"password"`, `"magic-link"`, `"email-otp"`,
+  `"phone-otp"`, `"email-verification"`, `"passkey"`, `"siwe"`, `"totp"`,
+  `"otp"`, `"backup-code"`. Import the constants from `@better-auth/core` so
+  the spelling stays in sync:
+
+  ```ts
+  import { BUILTIN_AMR_METHOD } from "@better-auth/core"
+  authClient.isLastUsedLoginMethod(BUILTIN_AMR_METHOD.PASSKEY)
+  ```
+
+* **OAuth providers**: the provider id, exactly as the account row stores it
+  (`"google"`, `"github"`, `"apple"`, custom SSO ids, ...). RFC 8176 §2
+  permits these "other acceptable values"; the plugin emits them verbatim.
+
+See [Authentication Factors](/docs/concepts/authentication-factors) for the
+full taxonomy and how plugins contribute their own methods.
+
+## Configuration
+
+### Server options
+
+```ts title="auth.ts"
+lastLoginMethod({
+    cookieName: "better-auth.last_used_login_method",
+    maxAge: 60 * 60 * 24 * 30,
+})
+```
+
+**cookieName**: `string`
+
+* Cookie name. Default: `"better-auth.last_used_login_method"`.
+* Always written with `httpOnly: false` so client JS can read it.
+
+**maxAge**: `number`
+
+* Cookie expiration in seconds. Default: `2592000` (30 days).
+
+### Client options
+
+```ts title="auth-client.ts"
+lastLoginMethodClient({
+    cookieName: "better-auth.last_used_login_method",
+})
+```
+
+**cookieName** must match the server-side configuration.
+
+## Cross-domain support
+
+The plugin reuses Better Auth's centralized cookie attributes. When you
+enable `crossSubDomainCookies` or `crossOriginCookies` on the auth instance,
+the cookie inherits the same `domain`, `secure`, and `sameSite` settings as
+the session cookie, so the value persists across your app surfaces.
+
+## Usage with Expo
+
+In React Native, import the client plugin from `@better-auth/expo/plugins`
+so the value is stored in your configured storage backend instead of the
+browser cookie jar:
+
+```ts
+import { createAuthClient } from "better-auth/react"
+import { expoClient } from "@better-auth/expo"
+import { lastLoginMethodClient } from "@better-auth/expo/plugins" // [!code highlight]
+import * as SecureStore from "expo-secure-store"
+
+export const authClient = createAuthClient({
+  plugins: [
+    expoClient({
+      scheme: "myapp",
+      storagePrefix: "myapp",
+      storage: SecureStore,
+    }),
+    lastLoginMethodClient({
+      storagePrefix: "myapp",
+      storage: SecureStore,
+    }),
+  ],
+})
+```
+
+<Callout type="info">
+  In Expo-only apps where browser support isn't needed, you can omit the
+  server plugin and rely solely on the client plugin reading from your
+  storage backend.
+</Callout>

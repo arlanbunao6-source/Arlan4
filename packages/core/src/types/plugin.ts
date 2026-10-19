@@ -1,0 +1,193 @@
+import type {
+	Endpoint,
+	EndpointContext,
+	InputContext,
+	Middleware,
+} from "better-call";
+import type { Migration } from "kysely";
+import type { AuthMiddleware } from "../api";
+import type { BetterAuthPluginDBSchema } from "../db";
+import type { RawError } from "../utils/error-codes";
+import type {
+	AuthContext,
+	CheckSignInChallengeInput,
+	CheckSignInChallengeResult,
+	GenericEndpointContext,
+} from "./context";
+import type { Awaitable, LiteralString } from "./helper";
+import type { BetterAuthOptions } from "./init-options";
+
+type DeepPartial<T> = T extends Function
+	? T
+	: T extends object
+		? { [K in keyof T]?: DeepPartial<T[K]> }
+		: T;
+
+export type HookEndpointContext = Partial<
+	EndpointContext<string, any> & Omit<InputContext<string, any>, "method">
+> & {
+	path?: string;
+	context: AuthContext & {
+		returned?: unknown | undefined;
+		responseHeaders?: Headers | undefined;
+	};
+	headers?: Headers | undefined;
+};
+
+export type BetterAuthPluginErrorCodePart = {
+	/**
+	 * The error codes returned by the plugin
+	 */
+	$ERROR_CODES?: Record<string, RawError>;
+};
+
+export type BetterAuthPlugin = BetterAuthPluginErrorCodePart & {
+	id: LiteralString;
+	version?: string | undefined;
+	/**
+	 * The init function is called when the plugin is initialized.
+	 * You can return a new context or modify the existing context.
+	 */
+	init?:
+		| ((ctx: AuthContext) =>
+				| Awaitable<{
+						context?: DeepPartial<Omit<AuthContext, "options">> &
+							Record<string, unknown>;
+						options?: Partial<BetterAuthOptions>;
+				  }>
+				| void
+				| Promise<void>)
+		| undefined;
+	endpoints?:
+		| {
+				[key: string]: Endpoint;
+		  }
+		| undefined;
+	middlewares?:
+		| {
+				path: string;
+				middleware: Middleware;
+		  }[]
+		| undefined;
+	onRequest?:
+		| ((
+				request: Request,
+				ctx: AuthContext,
+		  ) => Promise<
+				| {
+						response: Response;
+				  }
+				| {
+						request: Request;
+				  }
+				| void
+		  >)
+		| undefined;
+	onResponse?:
+		| ((
+				response: Response,
+				ctx: AuthContext,
+		  ) => Promise<{
+				response: Response;
+		  } | void>)
+		| undefined;
+	hooks?:
+		| {
+				before?: {
+					matcher: (context: HookEndpointContext) => boolean;
+					handler: AuthMiddleware;
+				}[];
+				after?: {
+					matcher: (context: HookEndpointContext) => boolean;
+					handler: AuthMiddleware;
+				}[];
+		  }
+		| undefined;
+	/**
+	 * Schema the plugin needs
+	 *
+	 * This will also be used to migrate the database. If the fields are dynamic from the plugins
+	 * configuration each time the configuration is changed a new migration will be created.
+	 *
+	 * NOTE: If you want to create migrations manually using
+	 * migrations option or any other way you
+	 * can disable migration per table basis.
+	 *
+	 * @example
+	 * ```ts
+	 * schema: {
+	 * 	user: {
+	 * 		fields: {
+	 * 			email: {
+	 * 				 type: "string",
+	 * 			},
+	 * 			emailVerified: {
+	 * 				type: "boolean",
+	 * 				defaultValue: false,
+	 * 			},
+	 * 		},
+	 * 	}
+	 * } as AuthPluginSchema
+	 * ```
+	 */
+	schema?: BetterAuthPluginDBSchema | undefined;
+	/**
+	 * The migrations of the plugin. If you define schema that will automatically create
+	 * migrations for you.
+	 *
+	 * ⚠️ Only uses this if you dont't want to use the schema option and you disabled migrations for
+	 * the tables.
+	 */
+	migrations?: Record<string, Migration> | undefined;
+	/**
+	 * The options of the plugin
+	 */
+	options?: Record<string, any> | undefined;
+	/**
+	 * types to be inferred
+	 */
+	$Infer?: Record<string, any> | undefined;
+	/**
+	 * The rate limit rules to apply to specific paths.
+	 */
+	rateLimit?:
+		| {
+				window: number;
+				max: number;
+				pathMatcher: (path: string) => boolean;
+		  }[]
+		| undefined;
+	/**
+	 * All database operations that are performed by the plugin
+	 *
+	 * This will override the default database operations
+	 */
+	adapter?: {
+		[key: string]: (...args: any[]) => Awaitable<any>;
+	};
+	/**
+	 * Names of sign-in challenge kinds this plugin gates finalization on.
+	 *
+	 * Declaring a non-empty tuple activates the `signInAttempt` schema table
+	 * and enables `resolveSignIn` to pause for this challenge. The tuple is a
+	 * runtime pairing for the type-level `BetterAuthSignInChallengeRegistry`:
+	 * registry augmentation alone is insufficient, because adapters and
+	 * `getAuthTables` need to decide at runtime whether to emit the attempt
+	 * schema.
+	 */
+	signInChallenges?: readonly string[] | undefined;
+	/**
+	 * Invoked by `resolveSignIn` before a fresh sign-in is finalized. Plugins
+	 * can pause sign-in with a typed challenge envelope, attach best-effort
+	 * success-side effects, or return `null` to let the next plugin decide.
+	 *
+	 * Any returned challenge kind must be declared in `signInChallenges` so the
+	 * runtime schema and the type-level registry stay paired.
+	 */
+	checkSignInChallenge?:
+		| ((
+				ctx: GenericEndpointContext,
+				input: CheckSignInChallengeInput,
+		  ) => Awaitable<CheckSignInChallengeResult>)
+		| undefined;
+};
