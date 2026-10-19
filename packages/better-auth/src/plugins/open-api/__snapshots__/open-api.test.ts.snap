@@ -1,0 +1,2935 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`open-api > should generate OpenAPI schema > openAPISchema 1`] = `
+{
+  "components": {
+    "parameters": {},
+    "schemas": {
+      "Account": {
+        "properties": {
+          "accessToken": {
+            "type": "string",
+          },
+          "accessTokenExpiresAt": {
+            "format": "date-time",
+            "type": "string",
+          },
+          "accountId": {
+            "type": "string",
+          },
+          "createdAt": {
+            "default": "Generated at runtime",
+            "format": "date-time",
+            "type": "string",
+          },
+          "id": {
+            "type": "string",
+          },
+          "idToken": {
+            "type": "string",
+          },
+          "password": {
+            "type": "string",
+          },
+          "providerId": {
+            "type": "string",
+          },
+          "refreshToken": {
+            "type": "string",
+          },
+          "refreshTokenExpiresAt": {
+            "format": "date-time",
+            "type": "string",
+          },
+          "scope": {
+            "type": "string",
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+          },
+          "userId": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "accountId",
+          "providerId",
+          "userId",
+          "createdAt",
+          "updatedAt",
+        ],
+        "type": "object",
+      },
+      "Session": {
+        "properties": {
+          "createdAt": {
+            "default": "Generated at runtime",
+            "format": "date-time",
+            "type": "string",
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+          },
+          "id": {
+            "type": "string",
+          },
+          "ipAddress": {
+            "type": "string",
+          },
+          "token": {
+            "type": "string",
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+          },
+          "userAgent": {
+            "type": "string",
+          },
+          "userId": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "expiresAt",
+          "token",
+          "createdAt",
+          "updatedAt",
+          "userId",
+        ],
+        "type": "object",
+      },
+      "User": {
+        "properties": {
+          "createdAt": {
+            "default": "Generated at runtime",
+            "format": "date-time",
+            "type": "string",
+          },
+          "email": {
+            "type": "string",
+          },
+          "emailVerified": {
+            "default": false,
+            "readOnly": true,
+            "type": "boolean",
+          },
+          "id": {
+            "type": "string",
+          },
+          "image": {
+            "type": "string",
+          },
+          "name": {
+            "type": "string",
+          },
+          "preferences": {
+            "type": "string",
+          },
+          "role": {
+            "default": "user",
+            "type": "string",
+          },
+          "updatedAt": {
+            "default": "Generated at runtime",
+            "format": "date-time",
+            "type": "string",
+          },
+        },
+        "required": [
+          "name",
+          "email",
+          "createdAt",
+          "updatedAt",
+          "role",
+        ],
+        "type": "object",
+      },
+      "Verification": {
+        "properties": {
+          "createdAt": {
+            "default": "Generated at runtime",
+            "format": "date-time",
+            "type": "string",
+          },
+          "expiresAt": {
+            "format": "date-time",
+            "type": "string",
+          },
+          "id": {
+            "type": "string",
+          },
+          "identifier": {
+            "type": "string",
+          },
+          "updatedAt": {
+            "default": "Generated at runtime",
+            "format": "date-time",
+            "type": "string",
+          },
+          "value": {
+            "type": "string",
+          },
+        },
+        "required": [
+          "identifier",
+          "value",
+          "expiresAt",
+          "createdAt",
+          "updatedAt",
+        ],
+        "type": "object",
+      },
+    },
+    "securitySchemes": {
+      "apiKeyCookie": {
+        "description": "API Key authentication via cookie",
+        "in": "cookie",
+        "name": "apiKeyCookie",
+        "type": "apiKey",
+      },
+      "bearerAuth": {
+        "description": "Bearer token authentication",
+        "scheme": "bearer",
+        "type": "http",
+      },
+    },
+  },
+  "info": {
+    "description": "API Reference for your Better Auth Instance",
+    "title": "Better Auth",
+    "version": "1.6.6",
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/account-info": {
+      "get": {
+        "description": "Get the account info provided by the provider",
+        "parameters": [
+          {
+            "description": "The provider given account id for which to get the account info",
+            "in": "query",
+            "name": "accountId",
+            "required": false,
+            "schema": {
+              "description": "The provider given account id for which to get the account info",
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "additionalProperties": {},
+                      "type": "object",
+                    },
+                    "user": {
+                      "properties": {
+                        "email": {
+                          "type": "string",
+                        },
+                        "emailVerified": {
+                          "type": "boolean",
+                        },
+                        "id": {
+                          "type": "string",
+                        },
+                        "image": {
+                          "type": "string",
+                        },
+                        "name": {
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "id",
+                        "emailVerified",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "user",
+                    "data",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/callback/{id}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "error",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "device_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "error_description",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "error",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "device_id",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "error_description",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+          {
+            "in": "query",
+            "name": "user",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "code": {
+                    "type": "string",
+                  },
+                  "device_id": {
+                    "type": "string",
+                  },
+                  "error": {
+                    "type": "string",
+                  },
+                  "error_description": {
+                    "type": "string",
+                  },
+                  "state": {
+                    "type": "string",
+                  },
+                  "user": {
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/change-email": {
+      "post": {
+        "operationId": "changeEmail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "callbackURL": {
+                    "description": "The URL to redirect to after email verification",
+                    "type": "string",
+                  },
+                  "newEmail": {
+                    "description": "The new email address to set must be a valid email address",
+                    "format": "email",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "newEmail",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "enum": [
+                        "Email updated",
+                        "Verification email sent",
+                        null,
+                      ],
+                      "type": [
+                        "string",
+                        "null",
+                      ],
+                    },
+                    "status": {
+                      "description": "Indicates if the request was successful",
+                      "type": "boolean",
+                    },
+                    "user": {
+                      "additionalProperties": {},
+                      "description": "The updated user (when email update is immediate)",
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/change-password": {
+      "post": {
+        "description": "Change the password of the user",
+        "operationId": "changePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "currentPassword": {
+                    "description": "The current password is required",
+                    "type": "string",
+                  },
+                  "newPassword": {
+                    "description": "The new password to set",
+                    "type": "string",
+                  },
+                  "revokeOtherSessions": {
+                    "description": "Must be a boolean value",
+                    "type": "boolean",
+                  },
+                },
+                "required": [
+                  "newPassword",
+                  "currentPassword",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "token": {
+                      "description": "New session token if revokeOtherSessions was requested; otherwise null",
+                      "type": [
+                        "string",
+                        "null",
+                      ],
+                    },
+                    "user": {
+                      "properties": {
+                        "createdAt": {
+                          "format": "date-time",
+                          "type": "string",
+                        },
+                        "email": {
+                          "format": "email",
+                          "type": "string",
+                        },
+                        "emailVerified": {
+                          "type": "boolean",
+                        },
+                        "id": {
+                          "type": "string",
+                        },
+                        "image": {
+                          "type": [
+                            "string",
+                            "null",
+                          ],
+                        },
+                        "name": {
+                          "type": "string",
+                        },
+                        "updatedAt": {
+                          "format": "date-time",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "id",
+                        "email",
+                        "name",
+                        "image",
+                        "emailVerified",
+                        "createdAt",
+                        "updatedAt",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "token",
+                    "user",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/delete-user": {
+      "post": {
+        "description": "Delete the user",
+        "operationId": "deleteUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "callbackURL": {
+                    "description": "The callback URL to redirect to after the user is deleted",
+                    "type": "string",
+                  },
+                  "password": {
+                    "description": "The password of the user is required to delete the user",
+                    "type": "string",
+                  },
+                  "token": {
+                    "description": "The token to delete the user is required",
+                    "type": "string",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "description": "Status message of the deletion process",
+                      "enum": [
+                        "User deleted",
+                        "Verification email sent",
+                      ],
+                      "type": "string",
+                    },
+                    "success": {
+                      "description": "Indicates if the operation was successful",
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/delete-user/callback": {
+      "get": {
+        "description": "Callback to complete user deletion with verification token",
+        "parameters": [
+          {
+            "description": "The token to verify the deletion request",
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "description": "The token to verify the deletion request",
+              "type": "string",
+            },
+          },
+          {
+            "description": "The URL to redirect to after deletion",
+            "in": "query",
+            "name": "callbackURL",
+            "required": false,
+            "schema": {
+              "description": "The URL to redirect to after deletion",
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "enum": [
+                        "User deleted",
+                      ],
+                      "type": "string",
+                    },
+                    "success": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "success",
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/error": {
+      "get": {
+        "description": "Displays an error page",
+        "responses": {
+          "200": {
+            "content": {
+              "text/html": {
+                "schema": {
+                  "description": "The HTML content of the error page",
+                  "type": "string",
+                },
+              },
+            },
+            "description": "HTML error page",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/get-access-token": {
+      "post": {
+        "description": "Get a valid access token, doing a refresh if needed",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "accountId": {
+                    "description": "The account ID associated with the refresh token",
+                    "type": "string",
+                  },
+                  "providerId": {
+                    "description": "The provider ID for the OAuth provider",
+                    "type": "string",
+                  },
+                  "userId": {
+                    "description": "The user ID associated with the account",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "providerId",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                    },
+                    "accessTokenExpiresAt": {
+                      "format": "date-time",
+                      "type": "string",
+                    },
+                    "idToken": {
+                      "type": "string",
+                    },
+                    "tokenType": {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/get-session": {
+      "get": {
+        "description": "Get the current session",
+        "operationId": "getSession",
+        "parameters": [
+          {
+            "description": "Disable cookie cache and fetch session from database",
+            "in": "query",
+            "name": "disableCookieCache",
+            "required": false,
+            "schema": {
+              "description": "Disable cookie cache and fetch session from database",
+              "type": [
+                "boolean",
+                "null",
+              ],
+            },
+          },
+          {
+            "description": "Disable session refresh. Useful for checking session status, without updating the session",
+            "in": "query",
+            "name": "disableRefresh",
+            "required": false,
+            "schema": {
+              "description": "Disable session refresh. Useful for checking session status, without updating the session",
+              "type": [
+                "boolean",
+                "null",
+              ],
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "session": {
+                      "additionalProperties": {},
+                      "description": "The current session object",
+                      "type": "object",
+                    },
+                    "user": {
+                      "additionalProperties": {},
+                      "description": "The authenticated user",
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "session",
+                    "user",
+                  ],
+                  "type": [
+                    "object",
+                    "null",
+                  ],
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+      "post": {
+        "description": "Get the current session",
+        "operationId": "getSession",
+        "parameters": [
+          {
+            "description": "Disable cookie cache and fetch session from database",
+            "in": "query",
+            "name": "disableCookieCache",
+            "required": false,
+            "schema": {
+              "description": "Disable cookie cache and fetch session from database",
+              "type": [
+                "boolean",
+                "null",
+              ],
+            },
+          },
+          {
+            "description": "Disable session refresh. Useful for checking session status, without updating the session",
+            "in": "query",
+            "name": "disableRefresh",
+            "required": false,
+            "schema": {
+              "description": "Disable session refresh. Useful for checking session status, without updating the session",
+              "type": [
+                "boolean",
+                "null",
+              ],
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "session": {
+                      "additionalProperties": {},
+                      "description": "The current session object",
+                      "type": "object",
+                    },
+                    "user": {
+                      "additionalProperties": {},
+                      "description": "The authenticated user",
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "session",
+                    "user",
+                  ],
+                  "type": [
+                    "object",
+                    "null",
+                  ],
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/link-social": {
+      "post": {
+        "description": "Link a social account to the user",
+        "operationId": "linkSocialAccount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "additionalData": {
+                    "additionalProperties": {},
+                    "type": "object",
+                  },
+                  "callbackURL": {
+                    "description": "The URL to redirect to after the user has signed in",
+                    "type": "string",
+                  },
+                  "disableRedirect": {
+                    "description": "Disable automatic redirection to the provider. Useful for handling the redirection yourself",
+                    "type": "boolean",
+                  },
+                  "errorCallbackURL": {
+                    "description": "The URL to redirect to if there is an error during the link process",
+                    "type": "string",
+                  },
+                  "idToken": {
+                    "properties": {
+                      "accessToken": {
+                        "type": "string",
+                      },
+                      "nonce": {
+                        "type": "string",
+                      },
+                      "refreshToken": {
+                        "type": "string",
+                      },
+                      "scopes": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "type": "array",
+                      },
+                      "token": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "token",
+                    ],
+                    "type": "object",
+                  },
+                  "provider": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "apple",
+                          "atlassian",
+                          "cognito",
+                          "discord",
+                          "facebook",
+                          "figma",
+                          "github",
+                          "microsoft",
+                          "google",
+                          "huggingface",
+                          "slack",
+                          "spotify",
+                          "twitch",
+                          "twitter",
+                          "dropbox",
+                          "kick",
+                          "linear",
+                          "linkedin",
+                          "gitlab",
+                          "tiktok",
+                          "reddit",
+                          "roblox",
+                          "salesforce",
+                          "vk",
+                          "zoom",
+                          "notion",
+                          "kakao",
+                          "naver",
+                          "line",
+                          "paybin",
+                          "paypal",
+                          "polar",
+                          "railway",
+                          "vercel",
+                          "wechat",
+                        ],
+                        "type": "string",
+                      },
+                      {
+                        "type": "string",
+                      },
+                    ],
+                  },
+                  "requestSignUp": {
+                    "type": "boolean",
+                  },
+                  "scopes": {
+                    "description": "Additional scopes to request from the provider",
+                    "items": {
+                      "type": "string",
+                    },
+                    "type": "array",
+                  },
+                },
+                "required": [
+                  "provider",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "redirect": {
+                      "description": "Indicates if the user should be redirected to the authorization URL",
+                      "type": "boolean",
+                    },
+                    "status": {
+                      "type": "boolean",
+                    },
+                    "url": {
+                      "description": "The authorization URL to redirect the user to",
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "redirect",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/list-accounts": {
+      "get": {
+        "description": "List all accounts linked to the user",
+        "operationId": "listUserAccounts",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "properties": {
+                      "accountId": {
+                        "type": "string",
+                      },
+                      "createdAt": {
+                        "format": "date-time",
+                        "type": "string",
+                      },
+                      "id": {
+                        "type": "string",
+                      },
+                      "providerId": {
+                        "type": "string",
+                      },
+                      "scopes": {
+                        "items": {
+                          "type": "string",
+                        },
+                        "type": "array",
+                      },
+                      "updatedAt": {
+                        "format": "date-time",
+                        "type": "string",
+                      },
+                      "userId": {
+                        "type": "string",
+                      },
+                    },
+                    "required": [
+                      "id",
+                      "providerId",
+                      "createdAt",
+                      "updatedAt",
+                      "accountId",
+                      "userId",
+                      "scopes",
+                    ],
+                    "type": "object",
+                  },
+                  "type": "array",
+                },
+              },
+            },
+            "description": "Success",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/list-sessions": {
+      "get": {
+        "description": "List all active sessions for the user",
+        "operationId": "listUserSessions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Active sessions for the current user",
+                  "items": {
+                    "additionalProperties": {},
+                    "type": "object",
+                  },
+                  "type": "array",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/ok": {
+      "get": {
+        "description": "Check if the API is working",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "ok": {
+                      "description": "Indicates if the API is working",
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "ok",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/refresh-token": {
+      "post": {
+        "description": "Refresh the access token using a refresh token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "accountId": {
+                    "description": "The account ID associated with the refresh token",
+                    "type": "string",
+                  },
+                  "providerId": {
+                    "description": "The provider ID for the OAuth provider",
+                    "type": "string",
+                  },
+                  "userId": {
+                    "description": "The user ID associated with the account",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "providerId",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "accessToken": {
+                      "type": "string",
+                    },
+                    "accessTokenExpiresAt": {
+                      "format": "date-time",
+                      "type": "string",
+                    },
+                    "idToken": {
+                      "type": "string",
+                    },
+                    "refreshToken": {
+                      "type": "string",
+                    },
+                    "refreshTokenExpiresAt": {
+                      "format": "date-time",
+                      "type": "string",
+                    },
+                    "tokenType": {
+                      "type": "string",
+                    },
+                  },
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/request-password-reset": {
+      "post": {
+        "description": "Send a password reset email to the user",
+        "operationId": "requestPasswordReset",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "description": "The email address of the user to send a password reset email to",
+                    "format": "email",
+                    "type": "string",
+                  },
+                  "redirectTo": {
+                    "description": "The URL to redirect the user to reset their password. If the token isn't valid or expired, it'll be redirected with a query parameter \`?error=INVALID_TOKEN\`. If the token is valid, it'll be redirected with a query parameter \`?token=VALID_TOKEN",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                    },
+                    "status": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/reset-password": {
+      "post": {
+        "description": "Reset the password for a user",
+        "operationId": "resetPassword",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "token",
+            "required": false,
+            "schema": {
+              "type": "string",
+            },
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "newPassword": {
+                    "description": "The new password to set",
+                    "type": "string",
+                  },
+                  "token": {
+                    "description": "The token to reset the password",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "newPassword",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/reset-password/{token}": {
+      "get": {
+        "description": "Redirects the user to the callback URL with the token",
+        "operationId": "resetPasswordCallback",
+        "parameters": [
+          {
+            "description": "The URL to redirect the user to reset their password",
+            "in": "query",
+            "name": "callbackURL",
+            "required": true,
+            "schema": {
+              "description": "The URL to redirect the user to reset their password",
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/revoke-other-sessions": {
+      "post": {
+        "description": "Revoke all other sessions for the user except the current one",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Indicates if all other sessions were revoked successfully",
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/revoke-session": {
+      "post": {
+        "description": "Revoke a single session",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "token": {
+                    "description": "The token to revoke",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "token",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Indicates if the session was revoked successfully",
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/revoke-sessions": {
+      "post": {
+        "description": "Revoke all sessions for the user",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Indicates if all sessions were revoked successfully",
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/send-verification-email": {
+      "post": {
+        "description": "Send a verification email to the user",
+        "operationId": "sendVerificationEmail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "callbackURL": {
+                    "description": "The URL to use for email verification callback",
+                    "example": "https://example.com/callback",
+                    "type": "string",
+                  },
+                  "email": {
+                    "description": "The email to send the verification email to",
+                    "example": "user@example.com",
+                    "format": "email",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "email",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Indicates if the email was sent successfully",
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/sign-in/email": {
+      "post": {
+        "description": "Sign in with email and password",
+        "operationId": "signInEmail",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "callbackURL": {
+                    "description": "Callback URL to use as a redirect for email verification",
+                    "type": "string",
+                  },
+                  "email": {
+                    "description": "Email of the user",
+                    "type": "string",
+                  },
+                  "password": {
+                    "description": "Password of the user",
+                    "type": "string",
+                  },
+                  "rememberMe": {
+                    "default": true,
+                    "description": "If this is false, the session will not be remembered. Default is \`true\`.",
+                    "type": "boolean",
+                  },
+                },
+                "required": [
+                  "email",
+                  "password",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "redirect": {
+                      "description": "Whether a redirect is required",
+                      "type": "boolean",
+                    },
+                    "token": {
+                      "description": "Session token",
+                      "type": "string",
+                    },
+                    "url": {
+                      "type": [
+                        "string",
+                        "null",
+                      ],
+                    },
+                    "user": {
+                      "additionalProperties": {},
+                      "description": "The authenticated user",
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "redirect",
+                    "token",
+                    "user",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/sign-in/social": {
+      "post": {
+        "description": "Sign in with a social provider",
+        "operationId": "socialSignIn",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "additionalData": {
+                    "additionalProperties": {},
+                    "description": "Additional data to be passed through the OAuth flow",
+                    "type": "object",
+                  },
+                  "callbackURL": {
+                    "description": "Callback URL to redirect to after the user has signed in",
+                    "type": "string",
+                  },
+                  "disableRedirect": {
+                    "description": "Disable automatic redirection to the provider. Useful for handling the redirection yourself",
+                    "type": "boolean",
+                  },
+                  "errorCallbackURL": {
+                    "description": "Callback URL to redirect to if an error happens",
+                    "type": "string",
+                  },
+                  "idToken": {
+                    "properties": {
+                      "accessToken": {
+                        "description": "Access token from the provider",
+                        "type": "string",
+                      },
+                      "expiresAt": {
+                        "description": "Expiry date of the token",
+                        "type": "number",
+                      },
+                      "nonce": {
+                        "description": "Nonce used to generate the token",
+                        "type": "string",
+                      },
+                      "refreshToken": {
+                        "description": "Refresh token from the provider",
+                        "type": "string",
+                      },
+                      "token": {
+                        "description": "ID token from the provider",
+                        "type": "string",
+                      },
+                      "user": {
+                        "description": "The user object from the provider. Only available for some providers like Apple.",
+                        "properties": {
+                          "email": {
+                            "type": "string",
+                          },
+                          "name": {
+                            "properties": {
+                              "firstName": {
+                                "type": "string",
+                              },
+                              "lastName": {
+                                "type": "string",
+                              },
+                            },
+                            "type": "object",
+                          },
+                        },
+                        "type": "object",
+                      },
+                    },
+                    "required": [
+                      "token",
+                    ],
+                    "type": "object",
+                  },
+                  "loginHint": {
+                    "description": "The login hint to use for the authorization code request",
+                    "type": "string",
+                  },
+                  "newUserCallbackURL": {
+                    "type": "string",
+                  },
+                  "provider": {
+                    "anyOf": [
+                      {
+                        "enum": [
+                          "apple",
+                          "atlassian",
+                          "cognito",
+                          "discord",
+                          "facebook",
+                          "figma",
+                          "github",
+                          "microsoft",
+                          "google",
+                          "huggingface",
+                          "slack",
+                          "spotify",
+                          "twitch",
+                          "twitter",
+                          "dropbox",
+                          "kick",
+                          "linear",
+                          "linkedin",
+                          "gitlab",
+                          "tiktok",
+                          "reddit",
+                          "roblox",
+                          "salesforce",
+                          "vk",
+                          "zoom",
+                          "notion",
+                          "kakao",
+                          "naver",
+                          "line",
+                          "paybin",
+                          "paypal",
+                          "polar",
+                          "railway",
+                          "vercel",
+                          "wechat",
+                        ],
+                        "type": "string",
+                      },
+                      {
+                        "type": "string",
+                      },
+                    ],
+                  },
+                  "requestSignUp": {
+                    "description": "Explicitly request sign-up. Useful when disableImplicitSignUp is true for this provider",
+                    "type": "boolean",
+                  },
+                  "scopes": {
+                    "description": "Array of scopes to request from the provider. This will override the default scopes passed.",
+                    "items": {
+                      "type": "string",
+                    },
+                    "type": "array",
+                  },
+                },
+                "required": [
+                  "provider",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Response varies by flow: idToken returns redirect=false with token/user; OAuth redirect returns url plus a redirect flag.",
+                  "properties": {
+                    "redirect": {
+                      "description": "False when the user is signed in via idToken; true/false otherwise depending on whether the redirect is performed server-side",
+                      "type": "boolean",
+                    },
+                    "token": {
+                      "description": "Session token. Present in the idToken flow.",
+                      "type": "string",
+                    },
+                    "url": {
+                      "description": "Authorization URL. Present in the OAuth redirect flow.",
+                      "type": [
+                        "string",
+                        "null",
+                      ],
+                    },
+                    "user": {
+                      "additionalProperties": {},
+                      "description": "The user object. Present in the idToken flow.",
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "redirect",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/sign-out": {
+      "post": {
+        "description": "Sign out the current user",
+        "operationId": "signOut",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "success",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/sign-up/email": {
+      "post": {
+        "description": "Sign up a user using email and password",
+        "operationId": "signUpWithEmailAndPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "properties": {
+                      "callbackURL": {
+                        "description": "The URL to use for email verification callback",
+                        "type": "string",
+                      },
+                      "email": {
+                        "description": "The email of the user",
+                        "format": "email",
+                        "type": "string",
+                      },
+                      "image": {
+                        "description": "The profile image URL of the user",
+                        "type": "string",
+                      },
+                      "name": {
+                        "description": "The name of the user",
+                        "type": "string",
+                      },
+                      "password": {
+                        "description": "The password of the user",
+                        "minLength": 1,
+                        "type": "string",
+                      },
+                      "rememberMe": {
+                        "description": "If this is false, the session will not be remembered. Default is \`true\`.",
+                        "type": "boolean",
+                      },
+                    },
+                    "required": [
+                      "name",
+                      "email",
+                      "password",
+                    ],
+                    "type": "object",
+                  },
+                  {
+                    "additionalProperties": {},
+                    "type": "object",
+                  },
+                ],
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "token": {
+                      "description": "Authentication token for the session",
+                      "type": [
+                        "string",
+                        "null",
+                      ],
+                    },
+                    "user": {
+                      "properties": {
+                        "createdAt": {
+                          "description": "When the user was created",
+                          "format": "date-time",
+                          "type": "string",
+                        },
+                        "email": {
+                          "description": "The email address of the user",
+                          "format": "email",
+                          "type": "string",
+                        },
+                        "emailVerified": {
+                          "description": "Whether the email has been verified",
+                          "type": "boolean",
+                        },
+                        "id": {
+                          "description": "The unique identifier of the user",
+                          "type": "string",
+                        },
+                        "image": {
+                          "description": "The profile image URL of the user",
+                          "type": [
+                            "string",
+                            "null",
+                          ],
+                        },
+                        "name": {
+                          "description": "The name of the user",
+                          "type": "string",
+                        },
+                        "updatedAt": {
+                          "description": "When the user was last updated",
+                          "format": "date-time",
+                          "type": "string",
+                        },
+                      },
+                      "required": [
+                        "id",
+                        "email",
+                        "name",
+                        "image",
+                        "emailVerified",
+                        "createdAt",
+                        "updatedAt",
+                      ],
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "token",
+                    "user",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/unlink-account": {
+      "post": {
+        "description": "Unlink an account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "accountId": {
+                    "type": "string",
+                  },
+                  "providerId": {
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "providerId",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/update-session": {
+      "post": {
+        "description": "Update the current session",
+        "operationId": "updateSession",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": {},
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "session": {
+                      "additionalProperties": {},
+                      "description": "The updated session object",
+                      "type": "object",
+                    },
+                  },
+                  "required": [
+                    "session",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/update-user": {
+      "post": {
+        "description": "Update the current user",
+        "operationId": "updateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": {},
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/verify-email": {
+      "get": {
+        "description": "Verify the email of the user",
+        "parameters": [
+          {
+            "description": "The token to verify the email",
+            "in": "query",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "description": "The token to verify the email",
+              "type": "string",
+            },
+          },
+          {
+            "description": "The URL to redirect to after email verification",
+            "in": "query",
+            "name": "callbackURL",
+            "required": false,
+            "schema": {
+              "description": "The URL to redirect to after email verification",
+              "type": "string",
+            },
+          },
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "description": "Indicates if the email was verified successfully",
+                      "type": "boolean",
+                    },
+                    "user": {
+                      "additionalProperties": {},
+                      "description": "The verified user, if returned",
+                      "type": [
+                        "object",
+                        "null",
+                      ],
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+    "/verify-password": {
+      "post": {
+        "description": "Verify the current user's password",
+        "operationId": "verifyPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "password": {
+                    "description": "The password to verify",
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "password",
+                ],
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                    },
+                  },
+                  "required": [
+                    "status",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Success",
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "code": {
+                      "type": "string",
+                    },
+                    "message": {
+                      "type": "string",
+                    },
+                  },
+                  "required": [
+                    "message",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Bad Request. One of the declared error codes was thrown.",
+          },
+        },
+        "security": [
+          {
+            "bearerAuth": [],
+          },
+        ],
+        "tags": [
+          "Default",
+        ],
+      },
+    },
+  },
+  "security": [
+    {
+      "apiKeyCookie": [],
+      "bearerAuth": [],
+    },
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:3000/api/auth",
+    },
+  ],
+  "tags": [
+    {
+      "description": "Default endpoints that are included with Better Auth by default. These endpoints are not part of any plugin.",
+      "name": "Default",
+    },
+  ],
+  "webhooks": {},
+}
+`;
