@@ -1,0 +1,195 @@
+import { betterFetch } from "@better-fetch/fetch";
+import { createRemoteJWKSet, decodeJwt } from "jose";
+import { logger } from "../env";
+import { BetterAuthError } from "../error";
+import type { ProviderOptions, UpstreamProvider } from "../oauth2";
+import {
+	createAuthorizationURL,
+	getPrimaryClientId,
+	refreshAccessToken,
+	resolveRequestedScopes,
+	validateAuthorizationCode,
+} from "../oauth2";
+export interface FacebookProfile {
+	id: string;
+	name: string;
+	email?: string;
+	email_verified?: boolean;
+	picture: {
+		data: {
+			height: number;
+			is_silhouette: boolean;
+			url: string;
+			width: number;
+		};
+	};
+}
+
+export interface FacebookOptions extends ProviderOptions<FacebookProfile> {
+	clientId: string | string[];
+	/**
+	 * Extend list of fields to retrieve from the Facebook user profile.
+	 *
+	 * @default ["id", "name", "email", "picture"]
+	 */
+	fields?: string[] | undefined;
+
+	/**
+	 * The config id to use when undergoing oauth
+	 */
+	configId?: string | undefined;
+}
+
+const FACEBOOK_DEFAULT_SCOPES = ["email", "public_profile"];
+
+export const facebook = (options: FacebookOptions) => {
+	return {
+		id: "facebook",
+		name: "Facebook",
+		callbackPath: "/callback/facebook",
+		async createAuthorizationURL({
+			state,
+			scopes,
+			redirectURI,
+			loginHint,
+			additionalParams,
+		}) {
+			if (!getPrimaryClientId(options.clientId) || !options.clientSecret) {
+				logger.error(
+					"Client ID and client secret are required for Facebook. Make sure to provide them in the options.",
+				);
+				throw new BetterAuthError("CLIENT_ID_AND_SECRET_REQUIRED");
+			}
+			const requestedScopes = resolveRequestedScopes(
+				options,
+				FACEBOOK_DEFAULT_SCOPES,
+				scopes,
+			);
+			return createAuthorizationURL({
+				id: "facebook",
+				options,
+				authorizationEndpoint: "https://www.facebook.com/v24.0/dialog/oauth",
+				scopes: requestedScopes,
+				state,
+				redirectURI,
+				loginHint,
+				additionalParams: {
+					...(options.configId ? { config_id: options.configId } : {}),
+					...(additionalParams ?? {}),
+				},
+			});
+		},
+		validateAuthorizationCode: async ({ code, redirectURI }) => {
+			return validateAuthorizationCode({
+				code,
+				redirectURI,
+				options,
+				tokenEndpoint: "https://graph.facebook.com/v24.0/oauth/access_token",
+			});
+		},
+		idToken: {
+			// https://developers.facebook.com/docs/facebook-login/limited-login/token/#jwks
+			jwks: createRemoteJWKSet(
+				new URL("https://limited.facebook.com/.well-known/oauth/openid/jwks/"),
+			),
+			issuer: "https://www.facebook.com",
+			audience: options.clientId,
+			algorithms: ["RS256"],
+			// Facebook also accepts an opaque Graph access token on the client sign-in path;
+			// identity is then resolved by getUserInfo via the Graph API, which validates it.
+			allowOpaqueToken: true,
+		},
+		refreshAccessToken: options.refreshAccessToken
+			? options.refreshAccessToken
+			: async (refreshToken) => {
+					return refreshAccessToken({
+						refreshToken,
+						options: {
+							clientId: options.clientId,
+							clientKey: options.clientKey,
+							clientSecret: options.clientSecret,
+						},
+						tokenEndpoint:
+							"https://graph.facebook.com/v24.0/oauth/access_token",
+					});
+				},
+		async getUserInfo(token) {
+			if (options.getUserInfo) {
+				return options.getUserInfo(token);
+			}
+
+			if (token.idToken && token.idToken.split(".").length === 3) {
+				const profile = decodeJwt(token.idToken) as {
+					sub: string;
+					email: string;
+					name: string;
+					picture: string;
+				};
+
+				const user = {
+					id: profile.sub,
+					name: profile.name,
+					email: profile.email,
+					picture: {
+						data: {
+							url: profile.picture,
+							height: 100,
+							width: 100,
+							is_silhouette: false,
+						},
+					},
+				};
+
+				// https://developers.facebook.com/docs/facebook-login/limited-login/permissions
+				// Facebook ID token does not include email_verified claim.
+				// We default to false for security consistency.
+				const userMap = await options.mapProfileToUser?.({
+					...user,
+					email_verified: false,
+				});
+
+				return {
+					user: {
+						...user,
+						emailVerified: false,
+						...userMap,
+					},
+					data: profile,
+				};
+			}
+
+			const fields = [
+				"id",
+				"name",
+				"email",
+				"picture",
+				...(options?.fields || []),
+			];
+			const { data: profile, error } = await betterFetch<FacebookProfile>(
+				"https://graph.facebook.com/me?fields=" + fields.join(","),
+				{
+					auth: {
+						type: "Bearer",
+						token: token.accessToken,
+					},
+				},
+			);
+			if (error) {
+				return null;
+			}
+			const userMap = await options.mapProfileToUser?.(profile);
+			return {
+				user: {
+					id: profile.id,
+					name: profile.name,
+					email: profile.email,
+					image: profile.picture.data.url,
+					emailVerified: profile.email_verified ?? false,
+					...userMap,
+				},
+				data: profile,
+			};
+		},
+		options,
+	} satisfies UpstreamProvider<FacebookProfile>;
+};
